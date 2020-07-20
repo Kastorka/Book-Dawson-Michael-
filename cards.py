@@ -46,10 +46,6 @@ class Hand(object):
         self.cards.remove(card)
         other_hand.add(card)
 
-    def check_amount(self):
-        count = len(self.cards)
-        return count
-
 
 class Deck(Hand):
     """ A deck of playing cards. """

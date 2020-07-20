@@ -24,6 +24,13 @@ class BJ_Deck(cards.Deck):
             for rank in BJ_Card.RANKS:
                 self.cards.append(BJ_Card(rank, suit))
 
+    @property   # Возвращает количество оставшихся карт в списке
+    def check_amount(self):
+        count = len(self.cards)
+        return count
+
+
+
 
 class BJ_Hand(cards.Hand):
     """ A Blackjack Hand. """
@@ -129,10 +136,13 @@ class BJ_Game(object):
                 player.bust()
 
     def reload_deck(self):
-        if self.deck.check_amount() < 20:
-            self.deck.cards = []
+        if self.deck.check_amount < 30:
+            print("Меняю колоду")
+            self.deck.clear()
             self.deck.populate()
             self.deck.shuffle()
+
+
 
     def play(self):
         # deal initial 2 cards to everyone
