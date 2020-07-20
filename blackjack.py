@@ -38,6 +38,7 @@ class BJ_Hand(cards.Hand):
         super(BJ_Hand, self).__init__()
         self.name = name
 
+
     def __str__(self):
         rep = self.name + ":\t" + super(BJ_Hand, self).__str__()
         if self.total:
@@ -75,6 +76,26 @@ class BJ_Hand(cards.Hand):
 
 class BJ_Player(BJ_Hand):
     """ A Blackjack Player. """
+    def __init__(self, name, money = 100, bet = 0):
+        super(BJ_Player, self).__init__(name)
+        self.money = money
+        self.bet = bet
+
+    def __str__(self):
+        rep = super(BJ_Player, self).__str__()
+        if self.money:
+            rep += " Количество денег " + str(self.money)
+        return rep
+
+    def bet(self):
+        bet = games.ask_number('Сколько вы хотите поставить 1-5 ', 1, 105)
+        while bet > self.money:
+            print('Ставка не может быть больше вашего баланса в ', self.money, 'кредитов')
+            bet = games.ask_number('Сколько вы хотите поставить 1-5 ', 1, 105)
+        return self.bet
+
+
+
     def is_hitting(self):
         response = games.ask_yes_no("\n" + self.name + ", do you want a hit? (Y/N): ")
         return response == "y"
@@ -83,11 +104,16 @@ class BJ_Player(BJ_Hand):
         print(self.name, "busts.")
         self.lose()
 
+
     def lose(self):
         print(self.name, "loses.")
+        self.money -= self.bet
+
 
     def win(self):
         print(self.name, "wins.")
+        self.money += self.bet
+
 
     def push(self):
         print(self.name, "pushes.")
@@ -145,6 +171,14 @@ class BJ_Game(object):
 
 
     def play(self):
+        # ставки в начале раунда
+        print('Делайте ваши ставки')
+        for player in self.players:
+            print('\n', player.name.title(), ', ваш баланс - ', player.money)
+            bet = games.ask_number('Сколько вы хотитет поставить ', 1, player.money+1)
+            player.bet = bet
+
+
         # deal initial 2 cards to everyone
         self.deck.deal(self.players + [self.dealer], per_hand = 2)
         self.dealer.flip_first_card()    # hide dealer's first card
@@ -160,7 +194,8 @@ class BJ_Game(object):
 
         if not self.still_playing:
             # since all players have busted, just show the dealer's hand
-            print(self.dealer)
+            for player in self.players:
+                print(self.dealer)
         else:
             # deal additional cards to dealer
             print(self.dealer)
