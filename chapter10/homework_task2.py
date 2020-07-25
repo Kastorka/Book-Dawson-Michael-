@@ -50,7 +50,7 @@ class Application(Frame):
 
 
 # main
-number = 5
+number = random.randint(1, 10)
 
 root = Tk()
 root.title("Угадай число")
